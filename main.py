@@ -7,9 +7,10 @@ import tabulate
 import time
 ###
 
+
 def linear_search(mylist, key):
 	""" done. """
-	for i,v in enumerate(mylist):
+	for i, v in enumerate(mylist):
 		if v == key:
 			return i
 	return -1
@@ -17,26 +18,39 @@ def linear_search(mylist, key):
 
 def binary_search(mylist, key):
 	""" done. """
-	return _binary_search(mylist, key, 0, len(mylist)-1)
+	return _binary_search(mylist, key, 0, len(mylist) - 1)
+
 
 def _binary_search(mylist, key, left, right):
+	if right >= left:
+		middle = (right + left) // 2
+
+		# Base Case: key is middle value; returns key
+		if key == mylist[middle]:
+			return middle
+		elif mylist[middle] > key:
+			return _binary_search(mylist, key, left, middle - 1)
+		else:
+			return _binary_search(mylist, key, middle + 1, right)
+	else:
+		return -1
 	"""
 	Recursive implementation of binary search.
 
 	Params:
-	  mylist....list to search
-	  key.......search key
-	  left......left index into list to search
-	  right.....right index into list to search
+		mylist....list to search
+		key.......search key
+		left......left index into list to search
+		right.....right index into list to search
 
 	Returns:
-	  index of key in mylist, or -1 if not present.
+		index of key in mylist, or -1 if not present.
 	"""
-	### TODO
-
-	###
 
 
+### TODO
+
+###
 
 
 def time_search(search_fn, mylist, key):
@@ -49,17 +63,23 @@ def time_search(search_fn, mylist, key):
 	You'll have to multiple by 1000 to get milliseconds.
 
 	Params:
-	  sort_fn.....the search function
-	  mylist......the list to search
-	  key.........the search key 
+		sort_fn.....the search function
+		mylist......the list to search
+		key.........the search key 
 
 	Returns:
-	  the number of milliseconds it takes to run this
-	  search function on this input.
+		the number of milliseconds it takes to run this
+		search function on this input.
 	"""
 	### TODO
+	start = time.time()
+	search_fn(mylist, key)
+	end = time.time()
+	time_difference = (end - start) * 1000
+	return time_difference
 
 	###
+
 
 def compare_search(sizes=[1e1, 1e2, 1e3, 1e4, 1e5, 1e6, 1e7]):
 	"""
@@ -71,19 +91,30 @@ def compare_search(sizes=[1e1, 1e2, 1e3, 1e4, 1e5, 1e6, 1e7]):
 	You'll use the time_search function to time each call.
 
 	Returns:
-	  A list of tuples of the form
-	  (n, linear_search_time, binary_search_time)
-	  indicating the number of milliseconds it takes
-	  for each method to run on each value of n
+		A list of tuples of the form
+		(n, linear_search_time, binary_search_time)
+		indicating the number of milliseconds it takes
+		for each method to run on each value of n
 	"""
 	### TODO
+	results = []
+	for size in sizes:
+		mylist = range(int(size))
+		binary_time = time_search(binary_search, mylist, -1)
+		linear_time = time_search(linear_search, mylist, -1)
+		results.append((size, linear_time, binary_time))
+	return results
 
 	###
 
+
 def print_results(results):
 	""" done """
-	print(tabulate.tabulate(results,
-							headers=['n', 'linear', 'binary'],
-							floatfmt=".3f",
-							tablefmt="github"))
+	print(
+			tabulate.tabulate(results,
+												headers=['n', 'linear', 'binary'],
+												floatfmt=".3f",
+												tablefmt="github"))
 
+
+print_results(compare_search())
